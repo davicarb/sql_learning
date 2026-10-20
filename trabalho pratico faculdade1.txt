@@ -1,0 +1,104 @@
+create database seguradora_tp
+
+create table cliente (
+	cd_cnpj varchar(14) primary key,
+	nm_razao_social varchar(150)
+);
+
+create table seguradora (
+	cd_cnpj varchar(14) primary key,
+	nm_razao_social varchar(150)
+);
+
+create table plano (
+	cd_plano int primary key,
+	nm_plano varchar(350),
+	sg_plano varchar(50) not null,
+	ds_beneficios varchar(1000)
+);
+
+create table contrato (
+	cd_contrato int primary key,
+	dt_assinatura date DEFAULT getdate(),
+	cd_cnpj_cliente varchar(14) foreign key references cliente,
+	cd_cnpj_seguradora varchar(14) foreign key references seguradora
+);
+
+create table apolice (
+	cd_apolice int primary key,
+	dt_validade date,
+	cd_plano int foreign key references plano,
+	cd_contrato int foreign key references contrato,
+	CHECK (dt_validade > getdate())
+);
+
+create table segurado (
+	cd_segurado int primary key,
+	nm_segurado varchar(100),
+	dt_nascimento date,
+	cd_apolice int foreign key references apolice,
+	ic_titular bit,
+	CHECK (dt_nascimento < getdate())
+);
+
+--- Inserts 
+insert into cliente(cd_cnpj, nm_razao_social)
+values ('133223550001', 'Mercado');
+insert into cliente(cd_cnpj, nm_razao_social)
+values ('19039820345', 'Padaria');
+insert into cliente(cd_cnpj, nm_razao_social)
+values ('29382930001', 'Loja de vinhos');
+insert into cliente (cd_cnpj, nm_razao_social)
+values ('49294020001', 'Mini Mercadinho');
+
+insert into seguradora (cd_cnpj, nm_razao_social)
+values ('4812940101', 'Seguradora Alfa');
+insert into seguradora (cd_cnpj, nm_razao_social)
+values ('5920394801', 'Beta Seguros');
+insert into seguradora (cd_cnpj, nm_razao_social)
+values ('7839201901', 'Gama Proteção');
+insert into seguradora (cd_cnpj, nm_razao_social)
+values ('9102938401', 'Delta Seguradora');
+
+insert into plano (cd_plano, nm_plano, sg_plano, ds_beneficios)
+values (1, 'Plano Básico', 'BAS', 'Cobertura nacional para acidentes pessoais');
+insert into plano (cd_plano, nm_plano, sg_plano, ds_beneficios)
+values (2, 'Plano Standard', 'STD', 'Cobertura nacional e assistência 24h');
+insert into plano (cd_plano, nm_plano, sg_plano, ds_beneficios)
+values (3, 'Plano Premium', 'PRE', 'Cobertura internacional, assistência 24h e saúde');
+insert into plano (cd_plano, nm_plano, sg_plano, ds_beneficios)
+values (4, 'Plano Corporate', 'COR', 'Cobertura completa para empresas e funcionários');
+
+insert into contrato (cd_contrato, dt_assinatura, cd_cnpj_cliente, cd_cnpj_seguradora)
+values (1, '2026-01-10', '133223550001', '4812940101');
+insert into contrato (cd_contrato, dt_assinatura, cd_cnpj_cliente, cd_cnpj_seguradora)
+values (2, '2026-02-15', '19039820345', '5920394801');
+insert into contrato (cd_contrato, dt_assinatura, cd_cnpj_cliente, cd_cnpj_seguradora)
+values (3, '2026-03-20', '29382930001', '7839201901');
+insert into contrato (cd_contrato, dt_assinatura, cd_cnpj_cliente, cd_cnpj_seguradora)
+values (4, '2026-04-05', '49294020001', '9102938401');
+
+insert into apolice (cd_apolice, dt_validade, cd_plano, cd_contrato)
+values (1, '2027-01-10', 1, 1);
+insert into apolice (cd_apolice, dt_validade, cd_plano, cd_contrato)
+values (2, '2027-06-15', 2, 2);
+insert into apolice (cd_apolice, dt_validade, cd_plano, cd_contrato)
+values (3, '2028-03-20', 3, 3);
+insert into apolice (cd_apolice, dt_validade, cd_plano, cd_contrato)
+values (4, '2029-12-31', 4, 4);
+
+insert into segurado (cd_segurado, nm_segurado, dt_nascimento, cd_apolice, ic_titular)
+values (1, 'Carlos Silva', '1985-04-12', 1, 1);
+insert into segurado (cd_segurado, nm_segurado, dt_nascimento, cd_apolice, ic_titular)
+values (2, 'Ana Souza', '1990-09-25', 2, 1);
+insert into segurado (cd_segurado, nm_segurado, dt_nascimento, cd_apolice, ic_titular)
+values (3, 'Marcos Oliveira', '1982-11-03', 3, 1);
+insert into segurado (cd_segurado, nm_segurado, dt_nascimento, cd_apolice, ic_titular)
+values (4, 'Beatriz Lima', '1995-07-19', 4, 1);
+
+select * from cliente;
+select * from seguradora;
+select * from plano;
+select * from contrato;
+select * from apolice;
+select * from segurado;
